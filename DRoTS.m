@@ -25,7 +25,7 @@ P0 = zeros(dimension, task_num);
 Q0 = zeros(dimension, task_num);
 
 
-bFlag=0; % this flag tests whether the gradient step only changes a little
+bFlag=0; 
 
 Pz= P0;
 Pz_old = P0;
@@ -47,9 +47,9 @@ while iter < opts.maxIter
     Ps = (1 + alpha) * Pz - alpha * Pz_old;
     Qs = (1 + alpha) * Qz - alpha * Qz_old;
     
-    % compute function value and gradients of the search point
+
     gWs = gradVal_eval(Ps, Qs);
-    Fs = funcVal_eval(Ps, Qs);  % differential part function value
+    Fs = funcVal_eval(Ps, Qs);  
     
     while true
         % proximal operator of P and Q
@@ -64,7 +64,6 @@ while iter < opts.maxIter
             sum(sum(delta_Qzp .* gWs)) + gamma / 2 * norm(delta_Qzp, 'fro')^2;
         
         
-        % there is basically no influence of penalties.
         if ( norm(Pzp - Ps, 'fro')^2 + norm(Qzp - Qs, 'fro')^2  <= 1e-20)  
             bFlag = 1;
             break;
@@ -126,7 +125,6 @@ end
 P = Pzp;
 Q = Qzp;
 W = P + Q;
-% private functions
 
     function [P_new] = Proximal_Temporal(P, lambda_1)
         
@@ -134,7 +132,7 @@ W = P + Q;
         
         for i = 1 : size(P, 1)
             v = P(i, :); %
-            p0 = zeros(length(v) -1, 1);   % dual variable, starting point
+            p0 = zeros(length(v) -1, 1);   
             p = flsa(v, p0, 0, lambda_1, length(v), 1000, 1e-9, 1, 6);
             P_new(i, :) = p';
         end
@@ -142,12 +140,11 @@ W = P + Q;
 
 
     function [Q_new] = Proximal_Outlier_ElementWise(Q, lambda2)
-%         Q_new = zeros(size(Q));
         Q_new = max( abs(Q) - lambda2, 0) .* sign(Q);
 
     end
 
-% smooth part gradient.
+
     function [grad_W] = gradVal_eval(P, Q)
         W = P + Q;
         if opts.pFlag
@@ -164,7 +161,7 @@ W = P + Q;
     end
 
 
-% smooth part func;
+
     function [funcVal] = funcVal_eval(P, Q)
         W = P + Q;
         funcVal = 0;
