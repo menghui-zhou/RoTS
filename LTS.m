@@ -1,5 +1,6 @@
-function [W, funcVal] = LTS(X, Y, rho,  opts)
 %1/2 ||XW-Y||_F^2 + \rho ||WH||_F^2
+
+function [W, funcVal] = LTS(X, Y, rho,  opts)
 
 if nargin <  4
     opts = [];
@@ -18,14 +19,10 @@ H=zeros(task_num,task_num-1);
 H(1:(task_num+1):end)=1;
 H(2:(task_num+1):end)=-1;
 HHt = H * H';
-% XY = cell(task_num, 1);
-% W0_prep = [];
-% for t_idx = 1: task_num
-%     XY{t_idx} = X{t_idx}*Y{t_idx};
-%     W0_prep = cat(2, W0_prep, XY{t_idx});
-% end
 
-% initialize a starting point
+
+
+
 if opts.init==2
     W0 = zeros(dimension, task_num);
 elseif opts.init == 0
@@ -59,25 +56,22 @@ while iter < opts.maxIter
     
     Ws = (1 + alpha) * Wz - alpha * Wz_old;
     
-    % compute function value and gradients of the search point
+
     gWs  = gradVal_eval(Ws);
     Fs   = funVal_eval (Ws);
     
     
-    % line search for proper stepsize: 1/gamma
     while true
         Wzp = Ws - gWs/gamma;  % gradient descent
         Fzp = funVal_eval  (Wzp);
         
         delta_Wzp = Wzp - Ws;
         r_sum = norm(delta_Wzp, 'fro')^2;
-        %Fzp_gamma = Fs + trace(delta_Wzp' * gWs)...
-        %    + gamma/2 * norm(delta_Wzp, 'fro')^2;
         Fzp_gamma = Fs + sum(sum(delta_Wzp .* gWs))...
             + gamma/2 * r_sum;
         
         if (r_sum <=1e-20)
-            bFlag=1; % this shows that, the gradient step makes little improvement
+            bFlag=1; 
             break;
         end
         
@@ -98,7 +92,7 @@ while iter < opts.maxIter
          break;
     end
     
-    % test stop condition.
+
     switch(opts.tFlag)
         case 0
             if iter>=2
@@ -131,9 +125,7 @@ end
 
 W = Wzp;
 
-% private functions
 
-% smooth part gradient.
     function [grad_W] = gradVal_eval(W)
         if opts.pFlag
             grad_W = zeros(size(W));
@@ -149,7 +141,7 @@ W = Wzp;
         grad_W = grad_W + rho * 2 *  W * HHt;
     end
 
-% smooth part function value.
+
     function [funcVal] = funVal_eval (W)
         funcVal = 0;
         if opts.pFlag
