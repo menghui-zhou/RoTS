@@ -1,4 +1,3 @@
-
 % 1/2 ||XW-Y||_F^2 + \rho ||FP^T||_1
 function [W, funcVal] = FTS(X, Y, rho, opts)
 
@@ -13,14 +12,14 @@ task_num  = length (X);
 dimension = size(X{1}, 1);
 funcVal = [];
 
-% Relation
+
 H=zeros(task_num,task_num-1);
 H(1:(task_num+1):end)=1;
 H(2:(task_num+1):end)=-1;
 F = H';
 
-% initial W
-%W0 = zeros(dimension, task_num);
+
+
 if opts.init==2
     W0 = zeros(dimension, task_num);
 elseif opts.init== 0
@@ -36,7 +35,7 @@ else
     end
 end
 
-bFlag=0; % this flag tests whether the gradient step only changes a little
+bFlag=0; 
 
 
 Wz= W0;
@@ -54,7 +53,7 @@ while iter < opts.maxIter
     
     Ws = (1 + alpha) * Wz - alpha * Wz_old;
 
-    % compute function value and gradients of the search point
+
     gWs  = gradVal_eval(Ws);
     Fs   = funVal_eval (Ws);
     
@@ -70,7 +69,7 @@ while iter < opts.maxIter
             + gamma/2 * nrm_delta_Wzp;
         
         if (r_sum <=1e-20)
-            bFlag=1; % this shows that, the gradient step makes little improvement
+            bFlag=1;
             break;
         end
 %         
@@ -87,11 +86,10 @@ while iter < opts.maxIter
     funcVal = cat(1, funcVal, Fzp + nonsmooth_eval(Wz, rho));
     
     if (bFlag)
-        % fprintf('\n The program terminates as the gradient step changes the solution very small.');
         break;
     end
-%     
-    % test stop condition.
+
+
     switch(opts.tFlag)
         case 0
             if iter>=2
@@ -124,7 +122,6 @@ end
 
 W = Wzp;
 
-% private functions
 
     function [Wp] = FGLasso_projection (W, rho)
 
@@ -138,7 +135,8 @@ W = Wzp;
         end
     end
 
-% smooth part gradient.
+
+
     function [grad_W] = gradVal_eval(W)
         if opts.pFlag
             grad_W = zeros(size(W));
@@ -154,7 +152,7 @@ W = Wzp;
     end
 
 
-% smooth part gradient.
+
     function [funcVal] = funVal_eval (W)
         funcVal = 0;
         if opts.pFlag
