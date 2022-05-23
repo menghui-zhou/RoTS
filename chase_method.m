@@ -1,6 +1,5 @@
 function [ x ] = chase_method( A, b )
-% Ax = b
-% tic;
+
 T = A;
 for i = 2 : size(T,1)
     T(i,i-1) = T(i,i-1)/T(i-1,i-1);
@@ -25,7 +24,6 @@ for i = 1:size(T,1)
     end
 end
 
-%  [L_test, U_test] = lu(A);
 
 y = zeros(size(b));
 y(1) = b(1);
@@ -37,9 +35,5 @@ x(length(b)) = y(length(b)) / U(length(b), length(b));
 for i = length(b)-1 : -1: 1
     x(i) = (y(i) - U(i, i+1) * x(i+1)) / U(i,i);
 end
-% toc;
 
-% tic;
-% x_test2 = pinv(A) * b;
-% toc;
 end
