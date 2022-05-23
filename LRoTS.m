@@ -12,20 +12,18 @@ task_num  = length (X);
 dimension = size(X{1}, 1);
 funcVal = [];
 
-% Relation
+
 H = zeros(task_num, task_num - 1);
 H(1 : (task_num + 1) : end) = 1;
 H(2 : (task_num + 1) : end) = -1;
 % F = H';
 
-% initial P Q
-% P0 = rand(dimension, task_num) * 100;
-% Q0 = rand(dimension, task_num) * 100;
+
 P0 = zeros(dimension, task_num);
 Q0 = zeros(dimension, task_num);
 
 
-bFlag=0; % this flag tests whether the gradient step only changes a little
+bFlag=0; 
 
 Pz = P0;
 Pz_old = P0;
@@ -46,11 +44,10 @@ while iter < opts.maxIter
     % linear combination
     Ps = (1 + alpha) * Pz - alpha * Pz_old;
     Qs = (1 + alpha) * Qz - alpha * Qz_old;
-    
-    % compute function value and gradients of the search point
-    % gWs = gPs = gQs
+
     gWs = gradVal_eval(Ps, Qs);
-    Fs = funcVal_eval(Ps, Qs);  % differential part function value
+    Fs = funcVal_eval(Ps, Qs); 
+    
     
     while true
         % proximal operator of P and Q
@@ -87,9 +84,7 @@ while iter < opts.maxIter
     funcVal = cat(1, funcVal, Fzp + nonsmooth_eval(Pzp, Qzp, rho1, rho2));
     
     
-    %     test stop condition.
     if (bFlag)
-        % fprintf('\n The program terminates as the gradient step changes the solution very small.\n');
         break;
     end
     
@@ -126,11 +121,9 @@ end
 P = Pzp;
 Q = Qzp;
 W = P + Q;
-% private functions
+
 
     function [P_new] = Proximal_Temporal(P, lambda)
-        % P_new(I + \lambda * HHT^) = P;
-        % (I + \lambda * HH^T) P_new^T = P^T
         T = lambda * H * (H');
         T = T + eye(size(T));
         
@@ -140,15 +133,7 @@ W = P + Q;
             
             P_new(i, :) = chase_method(T, b);
         end
-        
-        %         P_test = P * pinv(T);
-        %         error_test = norm(P_new - P_test, 2);
-        %         if error_test > 1e-3
-        %             fprintf('something wrong:  error = %f\n',  error_test);
-        %             pause(10);
-        %         end
-        
-        
+
     end
 
 
@@ -168,7 +153,7 @@ W = P + Q;
         
     end
 
-% smooth part gradient.
+
     function [grad_W] = gradVal_eval(P, Q)
         W = P + Q;
         if opts.pFlag
@@ -185,7 +170,7 @@ W = P + Q;
     end
 
 
-% smooth part func;
+
     function [funcVal] = funcVal_eval(P, Q)
         W = P + Q;
         funcVal = 0;
