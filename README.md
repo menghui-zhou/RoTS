@@ -1,2 +1,2 @@
 # RoTS
-RoTS：Robust Temporal Similarity
+RoTS：Robust Temporal Smoothness in Multi-Task Learning
