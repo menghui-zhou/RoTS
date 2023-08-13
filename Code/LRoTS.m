@@ -3,8 +3,10 @@ function [W, funcVal, P, Q] = LRoTS(X, Y, rho1, rho2, opts)
 if nargin < 5
     opts = [];
 end
-X = multi_transpose(X);
-
+% X = multi_transpose(X);
+for tt = 1 : length(X)
+    X{tt} = X{tt}';
+end
 
 opts = init_opts(opts);
 
