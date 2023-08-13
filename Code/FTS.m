@@ -4,7 +4,13 @@ function [W, funcVal] = FTS(X, Y, rho, opts)
 if nargin < 4
     opts = [];
 end
-X = multi_transpose(X);
+
+% X = multi_transpose(X);
+for tt = 1 : length(X)
+    X{tt} = X{tt}';
+end
+
+
 % initialize options.
 opts=init_opts(opts);
 
